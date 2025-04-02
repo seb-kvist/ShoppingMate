@@ -48,4 +48,4 @@ Navigera mellan sidorna med hjälp av menyn. Applikationen har tre huvudvyer:
 
 - **Affärsplan** – Beskriver affärsplanen för ShoppingMate.
 - **Projektidé** – Beskriver prototypen och dess funktionalitet.
-- **Om Mig** – Valfritt innehåll, t.ex. kontaktuppgifter.
+- **Om Mig** – Kontaktuppgifter
