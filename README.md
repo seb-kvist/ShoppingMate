@@ -33,7 +33,7 @@ cd shoppingmate
 npm install
 ```
 
-### 3️ Starta utvecklingsservern
+### 3️: Starta utvecklingsservern
 ```
 npm run dev
 ```
