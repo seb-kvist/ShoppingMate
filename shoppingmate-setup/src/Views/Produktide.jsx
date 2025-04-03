@@ -5,8 +5,10 @@ function Produktide() {
     <div>
       <h2>Produktidé</h2>
       <p>
-        Jag kommer att skapa en app som gör det möjligt för flera användare att logga in och samarbeta på en gemensam shoppinglista där man kommer att kunna lägga till, ta bort och redigera objekt på listan i realtid. 
-        För att skapa denna funktionalitet kommer jag att implementera inloggningssystem och användarhantering så att varje användare kan ha tillgång till samma/registrerad lista, och även då grunfunktionalitet som att trycka på knappar för att lägga till/ta bort och redigera objekt.
+        Prototypen jag kommer skapa i detta projekt kommer vara som MVP en app där flera användare ska kunna logga in och hantera en gemensam inköpslista i realtid. 
+      </p>
+      <p>
+      För att skapa denna funktionalitet kommer jag att implementera inloggningssystem och användarhantering så att varje användare har tillgång till samma inköpslista, och även då grunfunktionalitet som att trycka på knappar för att lägga till, ta bort och redigera artiklar.
       </p>
     </div>
   );
