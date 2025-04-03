@@ -38,11 +38,6 @@ npm install
 npm run dev
 ```
 
-## Alt. För att bygga projektet för produktion, kör:
-```
-npm run build
-```
-
 ## Användning
 Navigera mellan sidorna med hjälp av menyn. Applikationen har tre huvudvyer:
 
