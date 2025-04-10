@@ -1,14 +1,14 @@
 # ShoppingMate
 Detta är en React-applikation byggd med Vite för att demonstrera affärsplanen och prototypidén för ShoppingMate – en app som hjälper användare att samarbeta kring sina inköpslistor.  
 
-## 📌 Versionshantering
+## Versionshantering
 Projektet använder Git för versionshantering genom release och taggningar.
 
 - `main` innehåller produktionsklar kod.
 - `deploy-release` är en separat branch för produktionssättning.
 - Tidigare versioner har egna releases och dokumenteras via release-taggar.
 
-### 🔖 Release-taggar:
+### Release-taggar:
 - `v1.0-setup` – Tidigare version från "Assignment 1, Setup", innehåller grundläggande setup och utvecklingskod.
 - `v1.0-deploy` – Produktionsklar kod, redo för deployment. Skapad från `shoppingmate-deploy-release`-branchen.
 
