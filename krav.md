@@ -1,0 +1,1 @@
+### Projektet innehåller en fil döpt till krav.md som innehåller en lista med svar på de krav som finns för App med en beskrivning över vilka krav som är lösta med en kort förklaring hur.
