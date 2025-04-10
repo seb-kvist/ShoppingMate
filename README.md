@@ -14,7 +14,7 @@ Projektet använder Git för versionshantering genom release och taggningar.
 
 ## Teknik och system
 - React
-- React Router
+- Userstate
 - Vite
 
 ## Installation, utveckling & produktion
