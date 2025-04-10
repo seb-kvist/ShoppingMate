@@ -53,11 +53,14 @@ Projektet följer denna mappstruktur:
 
 ```
 /src
-├── /components   # Återanvändbara React-komponenter
-├── /views        # Vyer för affärsplan, projektidé och AboutMe
-├── /styling      # CSS-filer för styling
-├── App.jsx       # Huvudkomponenten
-├── main.jsx      # Ingångspunkt för React-applikationen
+├── /components        # Återanvändbara UI-komponenter
+├── /features          # Funktionella delar av appen (login, lists, home)
+│   ├── /login          # Hantering av autentisering (inloggning, registrering)
+│   ├── /lists         # Hantering av inköpslistor
+│   └── /homepage      # Startupvyn
+├── /styles           # CSS-fil för styling
+├── App.jsx            # Huvudkomponenten som renderar alla vyer
+├── main.jsx           # Ingångspunkt för React-applikationen
 ```
 ## .gitignore  
 
