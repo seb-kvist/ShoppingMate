@@ -9,8 +9,6 @@ lerna-debug.log*
 
 # Uteslut byggmappar
 node_modules/
-dist/
-dist-ssr/
 
 # Uteslut lokala filer
 *.local
