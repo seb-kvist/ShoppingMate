@@ -45,6 +45,8 @@ npm run dev
 
 ## Lansering
 Applikationen är online på DigitalOcean via följande länk:
+https://shoppingmate-app-rbdpf.ondigitalocean.app/
+
 ------------------
 
 
