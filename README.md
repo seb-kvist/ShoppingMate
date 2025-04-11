@@ -5,7 +5,7 @@ Detta är en React-applikation byggd med Vite för att demonstrera affärsplanen
 Projektet använder Git för versionshantering genom release och taggningar.
 
 - `main` innehåller produktionsklar kod.
-- `deploy-release` är en separat branch för produktionssättning.
+- `deploy-release` är en separat branch för utveckling.
 - Tidigare versioner har egna releases och dokumenteras via release-taggar.
 
 ### Release-taggar:
