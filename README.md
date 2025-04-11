@@ -12,10 +12,10 @@ Projektet använder Git för versionshantering genom release och taggningar.
 - `v1.0-setup` – Tidigare version från "Assignment 1, Setup", innehåller grundläggande setup och utvecklingskod.
 - `v1.0-deploy` – Produktionsklar kod, redo för deployment. Skapad från `shoppingmate-deploy-release`-branchen.
 
-## Teknik och system
-- React
-- Userstate
-- Vite
+## Tekniker i appen
+- React med event och states för att hantera vyer och komponenter
+- localstorage som hanterar produkter
+- Vite som byggsystem
 
 ## Installation, utveckling & produktion
 Följ dessa steg för att installera och köra projektet lokalt på din maskin:

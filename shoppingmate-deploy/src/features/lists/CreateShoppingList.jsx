@@ -4,16 +4,11 @@ import React, { useState } from 'react';
 function CreateShoppingList({ onCreateList }) { //State för att spara namn email och felmeddelanden
   const [listName, setListName] = useState('');
   const [emails, setEmails] = useState('');
-  const [error, setError] = useState('');
+
 
   //Funktion för när man submittar formuläret
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!listName || !emails) {
-      setError('Både listnamn och e-postadresser måste fyllas i.');
-      return;
-    }
 
     // Gör om eposten till en array separerat med ","
     const emailArray = emails.split(',').map(email => email.trim());
@@ -31,7 +26,6 @@ function CreateShoppingList({ onCreateList }) { //State för att spara namn emai
     // Återställer formuläret
     setListName('');
     setEmails('');
-    setError('');
   };
 
   return (
@@ -56,12 +50,8 @@ function CreateShoppingList({ onCreateList }) { //State för att spara namn emai
             value={emails} 
             onChange={(e) => setEmails(e.target.value)} 
             placeholder="email1@exempel.com, email2@exempel.com"
-            required
           />
         </div>
-
-        {error && <p style={{ color: 'red' }}>{error}</p>} {/* Visar felmeddelande vid fel */}
-
         <button type="submit">Skapa lista</button> 
 
       </form>

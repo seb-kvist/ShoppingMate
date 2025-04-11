@@ -16,7 +16,8 @@ function MainBody({ isLoggedIn, setIsLoggedIn }) {
     { id: 1, name: 'Hemmet', emails: ['exempel1@gmail.com'] },
     { id: 2, name: 'Jobbgruppen', emails: ['exempel2@gmail.com'] },
   ]);
-  const [selectedList, setSelectedList] = useState(null); //Detta håller koll vilken state som är vald
+  //Detta håller koll vilken state som är vald
+  const [selectedList, setSelectedList] = useState(null);
   
   // Funktion för att byta vy
   const handleNavigate = (view) => {
@@ -46,7 +47,7 @@ function MainBody({ isLoggedIn, setIsLoggedIn }) {
       <Header isLoginView={currentView === 'login'} onNavigate={handleNavigate} />
 
       {/* Om användaren inte är inloggad, visa inloggningsformuläret */}
-      <main className={`fade-in`}>
+      <main>
         {!isLoggedIn ? ( 
           <LoginView onLogin={() => {
              setIsLoggedIn(true); 
