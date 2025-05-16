@@ -1,0 +1,91 @@
+### 1. Testa Registrering (POST /api/auth/register)
+POST http://localhost:5096/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "mockuser2@example.com",
+  "password": "Password123!",
+  "firstName": "Mock",
+  "lastName": "User"
+}
+
+### 2. Testa Inloggning (POST /api/auth/login)
+POST http://localhost:5096/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "mockuser2@example.com",
+  "password": "Password123!"
+}
+
+### Spara JWT-token från föregående svar här
+@jwt-token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjVlYjZlMC03ZTg4LTRhNDUtYmYwNS0xNzk4NTEzMzQwZWIiLCJlbWFpbCI6Im1vY2t1c2VyMkBleGFtcGxlLmNvbSIsImZpcnN0TmFtZSI6Ik1vY2siLCJsYXN0TmFtZSI6IlVzZXIiLCJleHAiOjE3NDgwMDM0NzIsImlzcyI6IlNob3BwaW5nTWF0ZSIsImF1ZCI6IlNob3BwaW5nTWF0ZVVzZXIifQ.SYcUWdbPTCVfOftRoLifZy1Sx45qrzRRkenoL6WU-qE
+
+### 3. Testa Hämta Användaruppgifter (GET /api/auth/user)
+GET http://localhost:5096/api/auth/user
+Authorization: Bearer {{jwt-token}}
+
+### 4. Testa Skapa Inköpslista (POST /api/shoppinglist)
+POST http://localhost:5096/api/shoppinglist
+Content-Type: application/json
+Authorization: Bearer {{jwt-token}}
+
+{
+  "name": "Groceries"
+}
+
+### 5. Testa Hämta Inköpslistor (GET /api/shoppinglist)
+GET http://localhost:5096/api/shoppinglist
+Authorization: Bearer {{jwt-token}}
+
+### 6. Testa Uppdatera Inköpslistans Namn (PUT /api/shoppinglist/{listId})
+PUT http://localhost:5096/api/shoppinglist/1
+Content-Type: application/json
+Authorization: Bearer {{jwt-token}}
+
+{
+  "newListName": "Updated Groceries List"
+}
+
+### 7. Testa Lägg till Medlem i Lista (POST /api/shoppinglist/invite)
+POST http://localhost:5096/api/shoppinglist/invite?listId=1
+Content-Type: application/json
+Authorization: Bearer {{jwt-token}}
+
+{
+  "email": "mockuser@example.com"
+}
+
+### 8. Testa Lägg till Produkt (POST /api/shoppinglist/{listId}/items)
+POST http://localhost:5096/api/shoppinglist/1/items
+Content-Type: application/json
+Authorization: Bearer {{jwt-token}}
+
+{
+  "name": "Oboy",
+  "quantity": 2,
+  "isBought": false
+}
+
+### 9. Testa Hämta Produkter i en Lista (GET /api/shoppinglist/{listId}/items)
+GET http://localhost:5096/api/shoppinglist/1/items
+Authorization: Bearer {{jwt-token}}
+
+### 10. Testa Uppdatera Produkt (PUT /api/shoppinglist/{listId}/items/{itemId})
+PUT http://localhost:5096/api/shoppinglist/1/items/1
+Content-Type: application/json
+Authorization: Bearer {{jwt-token}}
+
+{
+  "name": "Skimmed Milk",
+  "quantity": 3,
+  "isBought": true
+}
+
+### 11. Testa Ta bort Produkt (DELETE /api/shoppinglist/{listId}/items/{itemId})
+DELETE http://localhost:5096/api/shoppinglist/1/items/1
+Authorization: Bearer {{jwt-token}}
+
+### 12. Testa Ta Bort Inköpslista (DELETE /api/shoppinglist/{listId})
+DELETE http://localhost:5096/api/shoppinglist/1
+Authorization: Bearer {{jwt-token}}
