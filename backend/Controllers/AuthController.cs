@@ -19,7 +19,7 @@ namespace ShoppingMate.Controllers
         private readonly IConfiguration _configuration;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        // Constructor
+        // Konstruktor – injicerar beroenden för användarhantering och konfiguration
         public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
@@ -27,7 +27,7 @@ namespace ShoppingMate.Controllers
             _configuration = configuration;
         }
 
-        // Register Endpoint
+        // Registrera ny användare (endpoint: POST /api/auth/register
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
@@ -38,7 +38,7 @@ namespace ShoppingMate.Controllers
                 FirstName = dto.FirstName,
                 LastName = dto.LastName
             };
-
+            // Försök skapa användaren i databasen med angivet lösenord
             var result = await _userManager.CreateAsync(user, dto.Password);
 
             if (!result.Succeeded)
@@ -47,7 +47,7 @@ namespace ShoppingMate.Controllers
             return Ok();
         }
 
-        // Login Endpoint
+        // Logga in och få JWT-token (endpoint: POST /api/auth/login)
         [HttpPost("login")]
         public async Task<IActionResult> Login (LoginDto dto)
         {
@@ -60,6 +60,7 @@ namespace ShoppingMate.Controllers
             if (!result.Succeeded)
                 return Unauthorized("Invalid credentials");
 
+            // Bygg claims (info) som ska läggas in i JWT-token
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
@@ -68,6 +69,7 @@ namespace ShoppingMate.Controllers
                 new Claim("lastName", user.LastName)
             };
 
+            // Skapa och signera JWT-token
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
@@ -77,16 +79,16 @@ namespace ShoppingMate.Controllers
                 expires: DateTime.Now.AddDays(7),
                 signingCredentials: creds
             );
-
+            // Returnera token till klienten
             return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
 
-        // Get Current User Endpoint
+        // Hämta nuvarande användare (endpoint: GET /api/auth/user)
         [HttpGet("user")]
-        [Authorize] // This ensures that the user must be authenticated (i.e., have a valid JWT)
+        [Authorize] // Endast inloggade användare får anropa denna endpoint (JWT krävs)
         public async Task<IActionResult> GetUser()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get the user ID from the JWT token
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Plocka ut user-id från JWT-token (autentisering)
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
