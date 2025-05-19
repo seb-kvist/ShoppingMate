@@ -8,5 +8,5 @@ public class ShoppingListDto
     public string Name { get; set; }
     public string OwnerId { get; set; }
     public DateTime CreatedAt { get; set; }
-   // public List<ShoppingListItemDto> Items { get; set; } = new List<ShoppingListItemDto>();
+    public List<ListMemberDto> ListMembers { get; set; } = new List<ListMemberDto>();
 }

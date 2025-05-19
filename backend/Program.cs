@@ -27,7 +27,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false; // For development, set to true in production
+    options.RequireHttpsMetadata = false; // true vid produktionsläge!
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -53,7 +53,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Skapa en scope och hämta UserManager och DbContext
+// Skapa scope för mockdata/init vid uppstart
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
