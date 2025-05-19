@@ -1,31 +1,65 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { API_URL, authHeaders } from '../../api';
 
-// Komponent för att skapa en ny inköpslista
-function CreateShoppingList({ onCreateList }) { //State för att spara namn email och felmeddelanden
+/**
+ * Komponent för att skapa en ny inköpslista och bjuda in medlemmar direkt.
+ * Props: onCreateList: callback som anropas när en lista har skapats (för att uppdatera listor i MainBody)
+ */
+function CreateShoppingList({ onCreateList }) {
+  // State för formulärfält och feedback
   const [listName, setListName] = useState('');
   const [emails, setEmails] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-
-  //Funktion för när man submittar formuläret
-  const handleSubmit = (e) => {
+  /**
+   * Hanterar formulärets submit (skapa lista + bjud in användare)
+   */
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
 
-    // Gör om eposten till en array separerat med ","
-    const emailArray = emails.split(',').map(email => email.trim());
+    // Gör om epoststrängen till en array av adresser, utan tomma värden
+    const emailArray = emails
+      .split(',')
+      .map(email => email.trim())
+      .filter(email => !!email);
 
-    // Skapa en ny lista
-    const newList = {
-      id: Date.now(),  // Skapar ett unikt id baserat på när det läggs in
-      name: listName,
-      emails: emailArray,
-    };
+    try {
+      // 1. Skapa själva listan i backend
+      const res = await fetch(`${API_URL}/shoppinglist`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ name: listName })
+      });
 
-    // Skicka den nya listan till MainBody
-    onCreateList(newList);
+      if (!res.ok) throw new Error("Kunde inte skapa lista");
 
-    // Återställer formuläret
-    setListName('');
-    setEmails('');
+      const created = await res.json();
+
+      // 2. Bjud in varje angiven e-postadress till listan
+      for (const email of emailArray) {
+        await fetch(`${API_URL}/shoppinglist/invite?listId=${created.id}`, {
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify({ email })
+        });
+      }
+
+      // 3. Återställ formuläret och meddela MainBody (för omhämtning)
+      setListName('');
+      setEmails('');
+      setError('');
+      if (onCreateList) onCreateList(created);
+
+    } catch (err) {
+      setError(err.message || "Något gick fel");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,26 +68,30 @@ function CreateShoppingList({ onCreateList }) { //State för att spara namn emai
       <form onSubmit={handleSubmit}>
         <div>
           <label>Listnamn</label>
-          <input 
-            type="text" 
-            value={listName} 
-            onChange={(e) => setListName(e.target.value)} 
-            placeholder="Exempel: Arbetsplatsen" 
+          <input
+            type="text"
+            value={listName}
+            onChange={(e) => setListName(e.target.value)}
+            placeholder="Exempel: Arbetsplatsen"
             required
           />
         </div>
 
         <div>
           <label>Bjud in användare via e-post (separera med kommatecken)</label>
-          <input 
-            type="email" 
-            value={emails} 
-            onChange={(e) => setEmails(e.target.value)} 
+          <input
+            type="text"
+            value={emails}
+            onChange={(e) => setEmails(e.target.value)}
             placeholder="email1@exempel.com, email2@exempel.com"
           />
         </div>
-        <button type="submit">Skapa lista</button> 
 
+        {/* Skicka-knapp och ev. felmeddelande */}
+        <button type="submit" className="create-list-btn" disabled={loading}>
+          {loading ? "Skapar..." : "Skapa lista"}
+        </button>
+        {error && <div className="create-shopping-list-error">{error}</div>}
       </form>
     </div>
   );

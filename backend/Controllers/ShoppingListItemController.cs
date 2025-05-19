@@ -20,7 +20,7 @@ namespace ShoppingMate.Controllers
             _context = context;
         }
 
-        // GEMENSAM accesskontroll för ägare och medlemmar
+        // För att kontrollera åtkomst (ägare eller medlem)
         private async Task<bool> UserHasAccessAsync(int listId, string userId)
         {
             var shoppingList = await _context.ShoppingLists
@@ -29,35 +29,39 @@ namespace ShoppingMate.Controllers
 
             if (shoppingList == null)
                 return false;
-
+            // Returnerar true om antingen ägare eller medlem
             return shoppingList.OwnerId == userId ||
                    shoppingList.ListMembers.Any(m => m.UserId == userId);
         }
 
-        // GET: api/shoppinglist/1/items
+        // Hämta alla produkter för en lista (GET: api/shoppinglist/1/items)
         [HttpGet]
         public async Task<IActionResult> GetItems(int listId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            // Kontrollera om användaren har rätt till listan
             if (!await UserHasAccessAsync(listId, userId))
                 return Unauthorized("You do not have access to this list.");
-
+            
+            // Hämta alla items (produkter) i listan
             var items = await _context.ShoppingListItems
                 .Where(i => i.ShoppingListId == listId)
                 .ToListAsync();
 
+            //DTo's till frontend
             var itemDtos = items.Select(i => new ShoppingListItemDto
             {
                 Name = i.Name,
                 Quantity = i.Quantity,
-                IsBought = i.IsBought
+                IsBought = i.IsBought,
+                Id = i.Id
             }).ToList();
 
             return Ok(itemDtos);
         }
 
-        // POST: api/shoppinglist/1/items
+        //  Lägg till en ny produkt i listan (POST: api/shoppinglist/1/items)
         [HttpPost]
         public async Task<IActionResult> AddItem(int listId, [FromBody] ShoppingListItemDto dto)
         {
@@ -66,6 +70,7 @@ namespace ShoppingMate.Controllers
             if (!await UserHasAccessAsync(listId, userId))
                 return Unauthorized("You do not have access to this list.");
 
+            // Skapa nytt produkt-objekt
             var item = new ShoppingListItem
             {
                 Name = dto.Name,
@@ -77,17 +82,19 @@ namespace ShoppingMate.Controllers
             _context.ShoppingListItems.Add(item);
             await _context.SaveChangesAsync();
 
+            // Skicka tillbaka info om tillagd produkt
             var responseDto = new ShoppingListItemDto
             {
                 Name = item.Name,
                 Quantity = item.Quantity,
-                IsBought = item.IsBought
+                IsBought = item.IsBought,
+                Id = item.Id
             };
 
             return Ok(responseDto);
         }
 
-        // PUT: api/shoppinglist/1/items/5
+        // Uppdatera en produkt i listan (PUT: api/shoppinglist/1/items/5)
         [HttpPut("{itemId}")]
         public async Task<IActionResult> UpdateItem(int listId, int itemId, [FromBody] ShoppingListItemDto dto)
         {
@@ -96,28 +103,32 @@ namespace ShoppingMate.Controllers
             if (!await UserHasAccessAsync(listId, userId))
                 return Unauthorized("You do not have access to this list.");
 
+            // Hämta produkten
             var item = await _context.ShoppingListItems
                 .FirstOrDefaultAsync(i => i.Id == itemId && i.ShoppingListId == listId);
             if (item == null)
                 return NotFound("Item not found.");
 
+            // Uppdatera produktens egenskaper
             item.Name = dto.Name;
             item.Quantity = dto.Quantity;
             item.IsBought = dto.IsBought;
 
             await _context.SaveChangesAsync();
 
+            // Skicka tillbaka uppdaterad produkt
             var responseDto = new ShoppingListItemDto
             {
                 Name = item.Name,
                 Quantity = item.Quantity,
-                IsBought = item.IsBought
+                IsBought = item.IsBought,
+                Id = item.Id
             };
 
             return Ok(responseDto);
         }
 
-        // DELETE: api/shoppinglist/1/items/5
+        // Radera en produkt från listan (DELETE: api/shoppinglist/1/items/5)
         [HttpDelete("{itemId}")]
         public async Task<IActionResult> DeleteItem(int listId, int itemId)
         {
@@ -125,7 +136,7 @@ namespace ShoppingMate.Controllers
 
             if (!await UserHasAccessAsync(listId, userId))
                 return Unauthorized("You do not have access to this list.");
-
+            // Hämta produkten som ska raderas
             var item = await _context.ShoppingListItems
                 .FirstOrDefaultAsync(i => i.Id == itemId && i.ShoppingListId == listId);
             if (item == null)
