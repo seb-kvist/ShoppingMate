@@ -16,7 +16,7 @@ Detta repo innehåller både frontend (React) och backend (ASP.NET Core) för ap
 ### Backend
 
 1. Navigera till mappen `backend`:
-   ```bash
+   ```
    cd backend
    ```
 2. Starta API:et ( API:et körs på http://localhost:5096 enl. launchSettings.json)
