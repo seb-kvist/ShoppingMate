@@ -3,6 +3,7 @@
 ## AUTH CONTROLLER
 
 (1) Registrera ny användare
+```
 POST http://localhost:5096/api/auth/register
 {
   "email": "user@example.com",
@@ -10,6 +11,7 @@ POST http://localhost:5096/api/auth/register
   "firstName": "Anna",
   "lastName": "Andersson"
 }
+```
 Använder en RegisterDto med e-post, lösenord, förnamn och efternamn. Returnerar 200 OK vid lyckad registrering.
 
 (2) Logga in och få JWT-token
