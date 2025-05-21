@@ -13,14 +13,14 @@ Detta repo innehåller både frontend (React) och backend (ASP.NET Core) för ap
 
 ## Kom igång
 
-### 🧾 1. Klona projektet frånn shoppingmate-fullstack
+### 1. Klona projektet frånn shoppingmate-fullstack
 ```
 git clone --branch shoppingmate-fullstack https://github.com/seb-kvist/ShoppingMate.git
 cd ShoppingMate
 git checkout shoppingmate-fullstack
 ```
 
-### 🧾 2. Starta backend/API
+### 2. Starta backend/API
 
 Navigera till mappen backend.
 ```
@@ -36,7 +36,7 @@ dotnet run
 ```
 API:et körs på http://localhost:5096 enl. launchSettings.json)
 
-### 🧾 3. Starta frontend (react + vite)
+### 3. Starta frontend (react + vite)
 
 Navigera till mappen frontend
 ```
