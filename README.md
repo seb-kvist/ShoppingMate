@@ -1,4 +1,4 @@
-# ShoppingMate – Fullstack
+q# ShoppingMate – Fullstack
 
 Detta repo innehåller både frontend (React) och backend (ASP.NET Core) för applikationen ShoppingMate.
 
@@ -13,45 +13,57 @@ Detta repo innehåller både frontend (React) och backend (ASP.NET Core) för ap
 
 ## Kom igång
 
-### Backend
+### 🧾 1. Klona projektet frånn shoppingmate-fullstack
+```
+git clone --branch shoppingmate-fullstack https://github.com/seb-kvist/ShoppingMate.git
+cd ShoppingMate
+git checkout shoppingmate-fullstack
+```
 
-1. Navigera till mappen `backend`:
-   ```
-   cd backend
-   ```
-2. Starta API:et ( API:et körs på http://localhost:5096 enl. launchSettings.json)
- ```
- dotnet run
- ```
+### 🧾 2. Starta backend/API
 
-3. Ingen extern databas är kopplad, allt lagras i minnet med InMemoryDatabas.
+Navigera till mappen backend.
+```
+cd backend
+```
+Installera .NET-beroenden
+```
+dotnet restore
+```
+Starta API:et
+```
+dotnet run
+```
+API:et körs på http://localhost:5096 enl. launchSettings.json)
 
+### 🧾 3. Starta frontend (react + vite)
 
-### Frontend
-
-1. Öppna en ny terminal och gå till frontend:
+Navigera till mappen frontend
 ```
 cd frontend
 ```
-2. Installera beroenden:
+Installera beroenden
 ```
 npm install
 ```
-
-3. Starta react (Frontenden körs på http://localhost:5173)
+Starta frontenden i utvecklingsläge
 ```
 npm run dev
 ```
 
+Frontenden körs på: http://localhost:5173
+
+
+
 ## Koppling frontend-backend
 
-- API_URL i frontend är satt till backendens adress (t.ex. http://localhost:5096).
+- API_URL i frontend är satt till backendens adress (http://localhost:5096).
 
 - Backend måste vara igång innan frontend används.
 
 - Frontenden kommunicerar med backend via fetch/REST.
 
-## Endpoints
+## Endpoints / API-testning
 
-- ApiTest.http innehåller olika endpoint-tester som man kan testköra med REST-Client
-- endpoints.md innehåller beskrivning av de olika endpointsen. 
+- ApiTest.http: Innehåller testanrop, kan användas med REST Client
+- endpoints.md: Beskrivning av alla tillgängliga endpoints.
