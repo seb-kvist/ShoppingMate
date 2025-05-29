@@ -1,6 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * InviteSystem – Modal/popup för att bjuda in en användare till listan.
+ * 
+ * Props:
+ * - show: boolean, om modalen ska visas
+ * - onClose: funktion, stänger popupen
+ * - inviteEmail: string, det aktuella värdet i inputfältet
+ * - onEmailChange: funktion, anropas vid ändring av input
+ * - onInvite: funktion, anropas vid klick på "Bjud in"
+ * - inviteMsg: string, eventuellt meddelande (feedback/fel/success)
+ */
+
 function InviteSystem({
   show,
   onClose,
@@ -32,6 +44,7 @@ function InviteSystem({
   );
 }
 
+// Definierar vilka typer av props komponenten förväntar sig
 InviteSystem.propTypes = {
   show: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,

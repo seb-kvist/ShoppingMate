@@ -4,13 +4,13 @@ import '../styles/GeneralAlert.css';
 
 /**
  * GeneralAlert är en återanvändningsbar komponent för feedback/meddelanden.
- * Kan användas för att visa info, fel, succé eller varningar.
+ * Används för att visa info, fel, succé eller varningar.
  *
  * Props:
  * - message (string) – Texten som visas.
- * - type (string) – Typ av meddelande: "success", "error", "info", "warning"
- * - onClose (funktion, valfri) – Om du vill visa en stäng-knapp.
+ * - type (string) – Typ av meddelande: "success", "error", "info", "warning" och dess färg.
  */
+
 function GeneralAlert({ message, type, onClose }) {
   return (
     <div className={`general-alert general-alert--${type}`}>
@@ -24,12 +24,14 @@ function GeneralAlert({ message, type, onClose }) {
   );
 }
 
+// Typkontroll för props
 GeneralAlert.propTypes = {
   message: PropTypes.string.isRequired,
   type: PropTypes.oneOf(['success', 'error', 'info', 'warning']),
   onClose: PropTypes.func,
 };
 
+// Defaultvärden för props – visas om ingen prop skickas in
 GeneralAlert.defaultProps = {
   type: 'info',
   onClose: null,

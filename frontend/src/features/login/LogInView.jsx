@@ -9,10 +9,11 @@ import { useNavigate } from 'react-router-dom';
  * Loggar in användaren via Context-API efter lyckad inloggning eller registrering.
  */
 function LoginView()  {
-  // State för att hålla reda på formulärfält, registreringsläge och felmeddelande
+  // Context-funktion för att logga in användaren globalt
   const { login } = useUser();
   const navigate = useNavigate();
   
+  // State för formulärfält, reg-läge och felmeddelande
   const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,14 +31,15 @@ function LoginView()  {
       if (isRegistering) {
         await register(email, password, firstName, lastName);
       }
-      // Logga in (alltid efter ev. registrering)
+      // Logga in efter ev. registrering
       const data = await loginApi(email, password);
-      // Lägg token i context/localStorage DIREKT så att fetchCurrentUser skickar med token
-      login(null, data.token); // Sätter bara token, user = null just nu
+      // Spara token till Context/localStorage (user = null först)
+      login(null, data.token); 
 
-      const userData = await fetchCurrentUser(); // Hämtar användaren, nu skickas token
-      login(userData, data.token); // Nu har du både user och token i context
-      navigate('/'); // Gå till startsida efter login
+      // Hämta användarinfo nu när token är satt, spara i Context
+      const userData = await fetchCurrentUser(); 
+      login(userData, data.token); 
+      navigate('/');
     } catch (err) {
       setErrorMsg(err.message);
     }
@@ -96,6 +98,7 @@ function LoginView()  {
         </button>
         {errorMsg && <GeneralAlert type="error" message={errorMsg} />}
       </form>
+      {/* Byt mellan login och register-läge */}
       <p>
         {isRegistering ? 'Har du redan ett konto? ' : 'Har du inget konto? '}
         <button type="button" onClick={() => setIsRegistering(!isRegistering)}>

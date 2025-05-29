@@ -11,21 +11,24 @@ import { fetchShoppingLists, fetchCurrentUser } from '../api/FetchCalls';
 import { useUser } from '../context/UserContext';
 
 /**
- * MainBody är den huvudsakliga routingen och innehållskomponenten för hela appen.
- * Här styrs användarflödet beroende på inloggning, navigation och hämtning av data.
+ * MainBody – Hanterar routing, state och huvudflödet för hela appen.
+ * All logik kring inloggning, navigation och datahämtning finns här.
  */
 function MainBody() {
+  // State för listor, vald lista och laddnings-status
   const [lists, setLists] = useState([]);
   const [selectedList, setSelectedList] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // React Router hooks för navigation och att veta aktuell sida
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Context: Användarinfo och autentisering
   const { user, setUser, token, login, logout } = useUser(); // <-- Context!
   const isLoggedIn = !!token; // <-- Bestäm inloggning baserat på token
 
-  // Hämta alla inköpslistor från backend
+  // Hämta inköpslistor från backend-API
   const fetchLists = async () => {
     setLoading(true);
     try {
@@ -38,7 +41,7 @@ function MainBody() {
     }
   };
 
-  // Hämta info om inloggad användare vid inloggning (eller logga ut om token är ogiltig)
+  // Hämta användarinformation vid inloggning eller när token ändras
   useEffect(() => {
     if (isLoggedIn) {
       fetchCurrentUser()
@@ -52,7 +55,7 @@ function MainBody() {
     }
   }, [isLoggedIn]);
 
-  // Hämta alla listor när man är inloggad (och nollställ när man loggar ut)
+  // Hämta alla listor när man är inloggad, annars nollställ
   useEffect(() => {
     if (isLoggedIn) {
       fetchLists();
@@ -61,7 +64,7 @@ function MainBody() {
     }
   }, [isLoggedIn]);
 
-  // Välj en lista och navigera till dess detaljsida
+  // Hantera att en lista väljs och klickas på
   const handleSelectList = (id) => {
     const found = lists.find(list => list.id === id);
     setSelectedList(found);
@@ -73,7 +76,7 @@ function MainBody() {
     setLists(updatedLists);
   };
 
-  // Privat route: om ej inloggad, redirecta till login
+  // Wrapper för privata routes: Släpper bara in inloggad användare
   function PrivateRoute({ children }) {
     return isLoggedIn ? children : <Navigate to="/login" />;
   }
@@ -81,8 +84,10 @@ function MainBody() {
   return (
     <>
       <Header />
+      {/* ErrorBoundary fångar fel från alla barnkomponenter i main */}
       <ErrorBoundary>
         <main>
+          {/* Routes till olika sidor */}
           <Routes>
             <Route
               path="/login"
@@ -143,6 +148,7 @@ function MainBody() {
                 </PrivateRoute>
               }
             />
+            {/* Fångar alla okända routes, redirectar till rätt startsida */}
             <Route path="*" element={<Navigate to={isLoggedIn ? "/" : "/login"} />} />
           </Routes>
         </main>

@@ -1,8 +1,8 @@
 // src/api/FetchCalls.js
 
-import { API_URL, authHeaders } from '../api'; // Anpassa vägen beroende på din struktur
+import { API_URL, authHeaders } from '../api';
 
-// --- AUTH ---
+// AUTH
 export async function fetchCurrentUser() {
   const res = await fetch(`${API_URL}/auth/user`, { headers: authHeaders() });
   if (!res.ok) throw new Error('Kunde inte hämta användare');
@@ -31,7 +31,7 @@ export async function register(email, password, firstName, lastName) {
   return text ? JSON.parse(text) : {};
 }
 
-// --- SHOPPING LISTS ---
+// SHOPPING LISTS
 export async function fetchShoppingLists() {
   const res = await fetch(`${API_URL}/shoppinglist`, { headers: authHeaders() });
   if (!res.ok) throw new Error('Kunde inte hämta listor');
@@ -54,7 +54,7 @@ export async function deleteShoppingList(listId) {
     headers: authHeaders(),
   });
   if (!res.ok) throw new Error('Kunde inte ta bort listan');
-  return res.text(); // eller res.json() om din backend skickar JSON
+  return res.text();
 }
 
 export async function updateShoppingListName(listId, newName) {
@@ -74,10 +74,10 @@ export async function inviteUserToList(listId, email) {
     body: JSON.stringify({ email })
   });
   if (!res.ok) throw new Error('Kunde inte bjuda in användare');
-  return res.text(); // eller res.json()
+  return res.text();
 }
 
-// --- ITEMS ---
+//ITEMS
 export async function fetchListItems(listId) {
   const res = await fetch(`${API_URL}/shoppinglist/${listId}/items`, { headers: authHeaders() });
   if (!res.ok) throw new Error('Kunde inte hämta produkter');
@@ -110,5 +110,5 @@ export async function deleteItemInList(listId, itemId) {
     headers: authHeaders(),
   });
   if (!res.ok) throw new Error('Kunde inte ta bort produkt');
-  return res.text(); // eller res.json()
+  return res.text();
 }

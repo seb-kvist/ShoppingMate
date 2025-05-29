@@ -1,6 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * ProductRow – Visar en rad för en produkt i inköpslistan, samt hanterar redigering och borttagning.
+ *
+ * Props:
+ * - item: produkt-objektet (name, quantity, isBought, id)
+ * - isEditing: true om raden är i redigeringsläge
+ * - editingText: nuvarande text i namn-fältet vid redigering
+ * - editingQuantity: nuvarande antal vid redigering
+ * - onToggle: funktion som togglar "köpt"/ej köpt
+ * - onEdit: funktion som går in i redigeringsläge för produkten
+ * - onDelete: funktion som tar bort produkten
+ * - onChangeEditText: funktion som uppdaterar text i namn-fältet vid redigering
+ * - onChangeEditQuantity: funktion som uppdaterar antal vid redigering
+ * - onSaveEdit: funktion som sparar ändringar (skickas produkten)
+ * - onCancelEdit: funktion som avbryter redigering
+ */
+
 function ProductRow({
   item,
   isEditing,
@@ -15,7 +32,7 @@ function ProductRow({
   onCancelEdit
 }) {
   if (isEditing) {
-    // Redigeringsläge
+    // Om raden är i redigeringsläge visas inputfält och "Spara/Avbryt"
     return (
       <div className="product-row">
         <input
@@ -40,7 +57,7 @@ function ProductRow({
     );
   }
 
-  // Visningsläge
+  // Annars visas produktens namn, antal och knappar för "Redigera" och "Ta bort"
   return (
     <div className={`product-row${item.isBought ? " purchased" : ""}`}>
       <input
@@ -57,6 +74,7 @@ function ProductRow({
   );
 }
 
+// Prop-types: krav och typer för varje prop
 ProductRow.propTypes = {
   item: PropTypes.object.isRequired,
   isEditing: PropTypes.bool,

@@ -3,12 +3,17 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 
+/**
+ * Header – Visar sidhuvudet med navigering och användarinformation.
+ * Visar navigationslänkar och utloggning om man är inloggad.
+ */
+
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useUser();
 
-  // Är vi på login-sidan?
+  // True om vi är på inloggningssidan
   const isLoginView = location.pathname === '/login';
 
   return (
@@ -16,7 +21,7 @@ function Header() {
       <div className="header-inner">
         <h1 className="header-logo">ShoppingMate</h1>
 
-        {/* Navigationslänkar (visa ej på login-sidan) */}
+        {/* Navigationslänkar visas bara om vi INTE är på login-sidan */}
         {!isLoginView && (
           <nav className="header-nav">
             <a href="#" onClick={e => { e.preventDefault(); navigate('/'); }}>Hem</a>
@@ -24,7 +29,7 @@ function Header() {
           </nav>
         )}
 
-        {/* Användarinformation och logga ut-knapp */}
+        {/* Användarinformation och logga ut-knapp om inloggad */}
         <div className="header-user-actions">
           {user && (
             <div className="header-user-info">
@@ -37,7 +42,7 @@ function Header() {
               </span>
             </div>
           )}
-          {/* Logga ut-knapp visas bara om användaren är inloggad */}
+          {/* Logga ut-knappen visas endast för inloggad användare */}
           {user && (
             <button className="header-logout-btn" onClick={logout}>Logga ut</button>
           )}

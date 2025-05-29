@@ -28,15 +28,15 @@ function CreateShoppingList({ onCreateList }) {
       .filter(email => !!email);
 
     try {
-      // 1. Skapa själva listan i backend med hjälöp av FetchCalls
+      // Skapa själva listan i backend med hjälöp av FetchCalls
       const created = await createShoppingList(listName);
 
-      // 2. Bjud in varje angiven e-postadress till listan
+      //  Bjud in varje angiven e-postadress till listan
       for (const email of emailArray) {
         await inviteUserToList(created.id, email); 
       }
 
-      // 3. Återställ formuläret och meddela MainBody (för omhämtning)
+      //  Återställ formuläret och meddela MainBody (för omhämtning)
       setListName('');
       setEmails('');
       setError('');

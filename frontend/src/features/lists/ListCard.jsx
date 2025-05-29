@@ -1,7 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * ListCard – Presenterar en inköpslista i kortformat med valbara actions.
+ *
+ * Props:
+ * - list: objektet för listan som ska visas
+ * - user: inloggad användare (för ägarkoll)
+ * - onSelect: funktion, anropas vid klick på kortet
+ * - onDelete: funktion, anropas vid klick på "Ta bort" (endast ägare ser knappen)
+ * - onEdit: funktion, anropas vid klick på "Redigera namn"
+ * - children: eventuella barnkomponenter
+ */
+
 function ListCard({ list, user, onSelect, onDelete, onEdit, children }) {
+  // Kontrollera om nuvarande användare är ägare av listan
   const isOwner = user && list.ownerId === user.id;
   return (
     
@@ -33,7 +46,7 @@ function ListCard({ list, user, onSelect, onDelete, onEdit, children }) {
     </div>
   );
 }
-
+ //Proptypes för att definiera vilka typer av props komponenten förväntar sig
 ListCard.propTypes = {
   list: PropTypes.object.isRequired,
   user: PropTypes.object,
