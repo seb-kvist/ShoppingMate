@@ -1,4 +1,4 @@
-q# ShoppingMate – Fullstack
+# ShoppingMate – Fullstack
 
 Detta repo innehåller både frontend (React) och backend (ASP.NET Core) för applikationen ShoppingMate.
 
