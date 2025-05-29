@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { API_URL, authHeaders } from '../../api';
+import GeneralAlert from '../../components/GeneralAlert';
+import ProductRow from './ProductRow';
+import InviteSystem from './InviteSystem';
+import { fetchShoppingLists, fetchListItems, addItemToList, updateItemInList, deleteItemInList, inviteUserToList } from '../../api/FetchCalls';
 
 /**
  * Visar och hanterar en vald inköpslista och dess produkter.
@@ -23,22 +26,26 @@ function SelectedShoppingList({ refreshLists }) {
   const [inviteMsg, setInviteMsg] = useState('');
   const [showInvite, setShowInvite] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   // Hämta själva listan när komponenten laddas eller byter id
   useEffect(() => {
-    fetch(`${API_URL}/shoppinglist`, { headers: authHeaders() })
-      .then(res => res.json())
+    setLoading(true);
+    fetchShoppingLists()
       .then(data => {
         const found = data.find(l => l.id === parseInt(id));
         setList(found);
-      });
+      })
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false));
   }, [id]);
 
   // Hämta alla produkter (items) för denna lista
   useEffect(() => {
-    fetch(`${API_URL}/shoppinglist/${id}/items`, { headers: authHeaders() })
-      .then(res => res.json())
-      .then(data => setItems(data))
+    setLoading(true);
+    fetchListItems(id)
+      .then(setItems)
+      .catch(e => setError(e.message))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -50,18 +57,13 @@ function SelectedShoppingList({ refreshLists }) {
       quantity: parseInt(newQuantity, 10),
       isBought: false,
     };
-    const res = await fetch(`${API_URL}/shoppinglist/${id}/items`, {
-      method: 'POST',
-      headers: authHeaders(),
-      body: JSON.stringify(body),
-    });
-    if (res.ok) {
-      const added = await res.json();
+    try {
+      const added = await addItemToList(id, body);
       setItems([...items, added]);
       setNewItem('');
       setNewQuantity(1);
-    } else {
-      alert('Kunde inte lägga till produkt.');
+    } catch (e) {
+      setError('Kunde inte lägga till produkt.');
     }
   };
 
@@ -74,29 +76,21 @@ function SelectedShoppingList({ refreshLists }) {
       quantity: item.quantity,
       isBought: !item.isBought,
     };
-    const res = await fetch(`${API_URL}/shoppinglist/${id}/items/${item.id}`, {
-      method: 'PUT',
-      headers: authHeaders(),
-      body: JSON.stringify(body),
-    });
-    if (res.ok) {
-      const updated = await res.json();
+    try {
+      const updated = await updateItemInList(id, item.id, body);
       setItems(items.map(it => it.id === itemId ? updated : it));
-    } else {
-      alert('Kunde inte uppdatera produkt.');
+    } catch (e) {
+      setError('Kunde inte uppdatera produkt.');
     }
   };
 
   // Ta bort produkt
   const deleteItem = async (itemId) => {
-    const res = await fetch(`${API_URL}/shoppinglist/${id}/items/${itemId}`, {
-      method: 'DELETE',
-      headers: authHeaders(),
-    });
-    if (res.ok) {
+    try {
+      await deleteItemInList(id, itemId);
       setItems(items.filter(item => item.id !== itemId));
-    } else {
-      alert('Kunde inte ta bort produkt.');
+    } catch (e) {
+      setError('Kunde inte ta bort produkt.');
     }
   };
 
@@ -107,19 +101,14 @@ function SelectedShoppingList({ refreshLists }) {
       quantity: parseInt(editingQuantity, 10),
       isBought: item.isBought,
     };
-    const res = await fetch(`${API_URL}/shoppinglist/${id}/items/${item.id}`, {
-      method: 'PUT',
-      headers: authHeaders(),
-      body: JSON.stringify(body),
-    });
-    if (res.ok) {
-      const updated = await res.json();
+    try {
+      const updated = await updateItemInList(id, item.id, body);
       const newItems = items.map(it => it.id === item.id ? updated : it);
       setItems(newItems);
       setEditingId(null);
       setEditingText('');
-    } else {
-      alert('Kunde inte spara ändring.');
+    } catch (e) {
+      setError('Kunde inte spara ändring.');
     }
   };
 
@@ -127,26 +116,17 @@ function SelectedShoppingList({ refreshLists }) {
   const handleInvite = async () => {
     if (!inviteEmail.trim()) return;
     setInviteMsg('');
-    const res = await fetch(`${API_URL}/shoppinglist/invite?listId=${id}`, {
-      method: "POST",
-      headers: authHeaders(),
-      body: JSON.stringify({ email: inviteEmail }),
-    });
-    if (res.ok) {
+    try {
+      await inviteUserToList(id, inviteEmail);
       setInviteMsg('Användare inbjuden!');
       setInviteEmail('');
       // Hämta om listan från backend så medlemmar uppdateras direkt
-      fetch(`${API_URL}/shoppinglist`, { headers: authHeaders() })
-        .then(res => res.json())
-        .then(data => {
-          const found = data.find(l => l.id === parseInt(id));
-          setList(found);
-          // Uppdatera huvudlistan i overview/översikt
-          if (typeof refreshLists === "function") refreshLists();
-        });
-    } else {
-      const err = await res.text();
-      setInviteMsg('Kunde inte bjuda in: ' + err);
+      const data = await fetchShoppingLists();
+      const found = data.find(l => l.id === parseInt(id));
+      setList(found);
+      if (typeof refreshLists === "function") refreshLists();
+    } catch (e) {
+      setInviteMsg('Kunde inte bjuda in: ' + e.message);
     }
   };
 
@@ -178,76 +158,39 @@ function SelectedShoppingList({ refreshLists }) {
       </div>
 
       {/* SYSTEM FÖR BJUD IN */}
-      {showInvite && (
-        <div className="invite-system-bg" onClick={() => setShowInvite(false)}>
-          <div className="invite-system" onClick={e => e.stopPropagation()}>
-            <h2>Bjud in användare till listan</h2>
-            <input
-              type="email"
-              className="invite-system-input"
-              value={inviteEmail}
-              onChange={e => setInviteEmail(e.target.value)}
-              placeholder="Användarens e-post"
-            />
-            <div className="invite-system-btn-row">
-              <button onClick={handleInvite} className="invite-system-invite-btn">Bjud in</button>
-              <button onClick={() => setShowInvite(false)} className="invite-system-close-btn">Stäng</button>
-            </div>
-            {/* Feedback-meddelande efter inbjudan */}
-            {inviteMsg && <div className="invite-msg">{inviteMsg}</div>}
-          </div>
-        </div>
-      )}
+      <InviteSystem
+        show={showInvite}
+        onClose={() => setShowInvite(false)}
+        inviteEmail={inviteEmail}
+        onEmailChange={setInviteEmail}
+        onInvite={handleInvite}
+        inviteMsg={inviteMsg}
+      />
+
 
       {/* Lista alla produkter */}
       <div className="product-card">
         <h2>Produkter</h2>
-        {items.map(item =>
-          editingId === item.id ? (
-            // Redigeringsläge för produkt
-            <div className="product-row" key={item.id}>
-              <input
-                type="checkbox"
-                checked={item.isBought}
-                onChange={() => toggleItem(item.id)}
-              />
-              <input
-                type="text"
-                value={editingText}
-                onChange={e => setEditingText(e.target.value)}
-              />
-              <input
-                type="number"
-                min="1"
-                value={editingQuantity}
-                onChange={e => setEditingQuantity(e.target.value)}
-              />
-              <button className="save-btn" onClick={() => saveEdit(item)}>Spara</button>
-              <button className="cancel-btn" onClick={() => setEditingId(null)}>Avbryt</button>
-            </div>
-          ) : (
-            // Visningsläge för produkt
-            <div
-              className={`product-row${item.isBought ? " purchased" : ""}`}
-              key={item.id}
-            >
-              <input
-                type="checkbox"
-                checked={item.isBought}
-                onChange={() => toggleItem(item.id)}
-                title="Markera som köpt"
-              />
-              <span className="item-name">{item.name}</span>
-              <span className="antals-text">(Antal: {item.quantity})</span>
-              <button className="edit-btn" onClick={() => {
-                setEditingId(item.id);
-                setEditingText(item.name);
-                setEditingQuantity(item.quantity);
-              }}>Redigera</button>
-              <button className="delete-btn" onClick={() => deleteItem(item.id)}>Ta bort</button>
-            </div>
-          )
-        )}
+        {items.map(item => (
+          <ProductRow
+            key={item.id}
+            item={item}
+            isEditing={editingId === item.id}
+            editingText={editingText}
+            editingQuantity={editingQuantity}
+            onToggle={toggleItem}
+            onEdit={(item) => {
+              setEditingId(item.id);
+              setEditingText(item.name);
+              setEditingQuantity(item.quantity);
+            }}
+            onDelete={deleteItem}
+            onChangeEditText={setEditingText}
+            onChangeEditQuantity={setEditingQuantity}
+            onSaveEdit={saveEdit}
+            onCancelEdit={() => setEditingId(null)}
+          />
+        ))}
 
         {/* Lägg till produkt-rad */}
         <div className="add-product-row">

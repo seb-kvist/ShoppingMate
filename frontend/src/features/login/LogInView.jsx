@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { API_URL } from '../../api';
+import GeneralAlert from '../../components/GeneralAlert';
+import { login as loginApi, register, fetchCurrentUser } from '../../api/FetchCalls';
+import { useUser } from '../../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * LoginView – hanterar både inloggning och registrering.
- * Props: onLogin: callback som anropas när användaren loggat in (för att MainBody ska uppdateras)
+ * Loggar in användaren via Context-API efter lyckad inloggning eller registrering.
  */
-function LoginView({ onLogin }) {
+function LoginView()  {
   // State för att hålla reda på formulärfält, registreringsläge och felmeddelande
+  const { login } = useUser();
+  const navigate = useNavigate();
+  
   const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,29 +23,21 @@ function LoginView({ onLogin }) {
   /**
    * Hanterar formulärets submit (login eller register)
    */
-  const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
     try {
       if (isRegistering) {
-        // Registrera (POST /api/auth/register)
-        const res = await fetch(`${API_URL}/auth/register`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, firstName, lastName }),
-        });
-        if (!res.ok) throw new Error("Registrering misslyckades")
+        await register(email, password, firstName, lastName);
       }
-      // Logga in (POST /api/auth/login)
-      const res = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!res.ok) throw new Error("Inloggning misslyckades");
-      const data = await res.json();
-      localStorage.setItem('token', data.token); // Spara JWT-token i localStorage
-      onLogin(); // Signalera till App/MainBody att man är inloggad
+      // Logga in (alltid efter ev. registrering)
+      const data = await loginApi(email, password);
+      // Lägg token i context/localStorage DIREKT så att fetchCurrentUser skickar med token
+      login(null, data.token); // Sätter bara token, user = null just nu
+
+      const userData = await fetchCurrentUser(); // Hämtar användaren, nu skickas token
+      login(userData, data.token); // Nu har du både user och token i context
+      navigate('/'); // Gå till startsida efter login
     } catch (err) {
       setErrorMsg(err.message);
     }
@@ -47,10 +45,8 @@ function LoginView({ onLogin }) {
 
   return (
     <div className="login-view">
-      {/* Rubrik (växlar beroende på login/registrering) */}
       <h2>{isRegistering ? 'Registrera dig' : 'Logga in'}</h2>
       <form onSubmit={handleSubmit}>
-        {/* E-postfält */}
         <div>
           <label htmlFor="email">Email:</label>
           <input
@@ -61,7 +57,6 @@ function LoginView({ onLogin }) {
             required
           />
         </div>
-        {/* Lösenordsfält */}
         <div>
           <label htmlFor="password">Lösenord:</label>
           <input
@@ -72,7 +67,6 @@ function LoginView({ onLogin }) {
             required
           />
         </div>
-        {/* Visa extra fält vid registrering */}
         {isRegistering && (
           <>
             <div>
@@ -97,14 +91,11 @@ function LoginView({ onLogin }) {
             </div>
           </>
         )}
-        {/* Login/registrerings-knapp */}
         <button type="submit">
           {isRegistering ? 'Registrera' : 'Logga in'}
         </button>
-        {/* Visa felmeddelande om något gått fel */}
-        {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
+        {errorMsg && <GeneralAlert type="error" message={errorMsg} />}
       </form>
-      {/* Länk för att växla mellan login/registrering */}
       <p>
         {isRegistering ? 'Har du redan ett konto? ' : 'Har du inget konto? '}
         <button type="button" onClick={() => setIsRegistering(!isRegistering)}>

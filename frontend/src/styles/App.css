@@ -638,3 +638,12 @@ footer {
   }
   .login-view h2 { font-size: 1.1em; }
 }
+
+.error-boundary {
+  padding: 30px;
+  text-align: center;
+}
+.error-details {
+  white-space: pre-wrap;
+  color: #a00;
+}

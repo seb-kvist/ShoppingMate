@@ -1,6 +1,16 @@
+// src/components/Header.jsx
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
-function Header({ isLoginView, onNavigate, user, onLogout }) {
+function Header() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user, logout } = useUser();
+
+  // Är vi på login-sidan?
+  const isLoginView = location.pathname === '/login';
+
   return (
     <header className="header">
       <div className="header-inner">
@@ -9,10 +19,8 @@ function Header({ isLoginView, onNavigate, user, onLogout }) {
         {/* Navigationslänkar (visa ej på login-sidan) */}
         {!isLoginView && (
           <nav className="header-nav">
-            {/* Navigera till startsidan */}
-            <a href="#" onClick={() => onNavigate('startup')}>Hem</a>
-            {/* Navigera till inköpslistor */}
-            <a href="#" onClick={() => onNavigate('shoppingListOverview')}>Inköpslistor</a>
+            <a href="#" onClick={e => { e.preventDefault(); navigate('/'); }}>Hem</a>
+            <a href="#" onClick={e => { e.preventDefault(); navigate('/lists'); }}>Inköpslistor</a>
           </nav>
         )}
 
@@ -31,7 +39,7 @@ function Header({ isLoginView, onNavigate, user, onLogout }) {
           )}
           {/* Logga ut-knapp visas bara om användaren är inloggad */}
           {user && (
-            <button className="header-logout-btn" onClick={onLogout}>Logga ut</button>
+            <button className="header-logout-btn" onClick={logout}>Logga ut</button>
           )}
         </div>
       </div>

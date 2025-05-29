@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { API_URL, authHeaders } from '../../api';
+import GeneralAlert from '../../components/GeneralAlert';
+import { createShoppingList, inviteUserToList } from '../../api/FetchCalls';
 
 /**
  * Komponent för att skapa en ny inköpslista och bjuda in medlemmar direkt.
@@ -12,7 +12,6 @@ function CreateShoppingList({ onCreateList }) {
   const [emails, setEmails] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   /**
    * Hanterar formulärets submit (skapa lista + bjud in användare)
@@ -29,24 +28,12 @@ function CreateShoppingList({ onCreateList }) {
       .filter(email => !!email);
 
     try {
-      // 1. Skapa själva listan i backend
-      const res = await fetch(`${API_URL}/shoppinglist`, {
-        method: "POST",
-        headers: authHeaders(),
-        body: JSON.stringify({ name: listName })
-      });
-
-      if (!res.ok) throw new Error("Kunde inte skapa lista");
-
-      const created = await res.json();
+      // 1. Skapa själva listan i backend med hjälöp av FetchCalls
+      const created = await createShoppingList(listName);
 
       // 2. Bjud in varje angiven e-postadress till listan
       for (const email of emailArray) {
-        await fetch(`${API_URL}/shoppinglist/invite?listId=${created.id}`, {
-          method: "POST",
-          headers: authHeaders(),
-          body: JSON.stringify({ email })
-        });
+        await inviteUserToList(created.id, email); 
       }
 
       // 3. Återställ formuläret och meddela MainBody (för omhämtning)
@@ -91,7 +78,7 @@ function CreateShoppingList({ onCreateList }) {
         <button type="submit" className="create-list-btn" disabled={loading}>
           {loading ? "Skapar..." : "Skapa lista"}
         </button>
-        {error && <div className="create-shopping-list-error">{error}</div>}
+        {error && <GeneralAlert type="error" message={error} />}
       </form>
     </div>
   );
