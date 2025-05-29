@@ -1,0 +1,85 @@
+# .NET build artifacts och VS/VS Code/JetBrains
+bin/
+obj/
+.vs/
+*.user
+*.dbmdl
+*.suo
+*.userosscache
+*.sln.docstates
+.idea/
+*.sln.iml
+*.iml
+.idea_modules/
+.idea/gradle.xml
+.idea/misc.xml
+.idea/runConfigurations/
+.idea/workspace.xml
+*.iws
+
+# Node/JS/Frontend
+node_modules/
+bower_components/
+dist/
+build/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Loggfiler
+logs
+*.log
+*.tlog
+*.log.json
+
+# Miljöfiler och configs
+*.local
+.env
+.env.*.local
+appsettings.Development.json
+appsettings.*.local.json
+
+# Editor/OS-filer
+.vscode/
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*~
+*.swp
+*.swo
+*.bak
+*.orig
+
+# Distribution/publicering
+publish/
+dist/
+BuildArtifacts/
+Release/
+Debug/
+artifacts/
+build/
+
+# Paket
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# Temporary
+*.tmp
+*.temp
+*.cache
+*.pdb
+*.ilk
+*.idb
+*.opendb
+
+# Git-specifika
+!.gitignore
