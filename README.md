@@ -16,8 +16,6 @@ Detta repo innehåller både frontend (React) och backend (ASP.NET Core) för ap
 ### 1. Klona projektet frånn shoppingmate-fullstack
 ```
 git clone --branch shoppingmate-fullstack https://github.com/seb-kvist/ShoppingMate.git
-cd ShoppingMate
-git checkout shoppingmate-fullstack
 ```
 
 ### 2. Starta backend/API
