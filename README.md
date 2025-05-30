@@ -20,13 +20,9 @@ git clone --branch shoppingmate-fullstack https://github.com/seb-kvist/ShoppingM
 
 ### 2. Starta backend/API
 
-Navigera till mappen backend.
+Gå till platsen du klonade filerna till och navigera till mappen backend.
 ```
 cd backend
-```
-Installera .NET-beroenden
-```
-dotnet restore
 ```
 Starta API:et
 ```
@@ -36,7 +32,7 @@ API:et körs på http://localhost:5096 enl. launchSettings.json)
 
 ### 3. Starta frontend (react + vite)
 
-Navigera till mappen frontend
+Gå till platsen du klonade filerna till och navigera till mappen frontend
 ```
 cd frontend
 ```
